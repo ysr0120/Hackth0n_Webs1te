@@ -1,50 +1,52 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <title>Login Test</title>
+  <meta charset="UTF-8">
+  <title>Login</title>
 </head>
 <body>
 
-  <h2>登入測試</h2>
+  <h2>Admin Login</h2>
 
-  <input id="username" placeholder="username"><br><br>
-  <input id="password" type="password" placeholder="password"><br><br>
-  <button onclick="login()">Login</button>
+  <input id="username" type="text" placeholder="username" />
+  <br><br>
+  <input id="password" type="password" placeholder="password" />
+  <br><br>
 
-  <pre id="result"></pre>
+  <button id="loginBtn">Login</button>
+
+  <p id="result"></p>
 
   <script>
-    const BACKEND_DOMAIN = "https://hackth0n-webs1te.vercel.app/api/login";
+    const LOGIN_API =
+      "https://ybcdjizonfdhmbxgwdfb.supabase.co/functions/v1/smooth-function";
 
-    async function login() {
-      try {
-        const res = await fetch(
-          `${BACKEND_DOMAIN}/api/login`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              username: document.getElementById("username").value,
-              password: document.getElementById("password").value
-            })
-          }
-        );
+    document.getElementById("loginBtn").addEventListener("click", async () => {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
 
-        const data = await res.json();
-        document.getElementById("result").textContent =
-          JSON.stringify(data, null, 2);
+      const res = await fetch(LOGIN_API, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username,
+          password
+        })
+      });
 
-      } catch (err) {
-        document.getElementById("result").textContent =
-          "Fetch error: " + err.message;
+      const data = await res.json();
+
+      if (data.ok) {
+        document.getElementById("result").innerText = "登入成功";
+        // 下一步可以在這裡導向解謎頁
+        // window.location.href = "puzzle.html";
+      } else {
+        document.getElementById("result").innerText = "登入失敗";
       }
-    }
+    });
   </script>
 
 </body>
 </html>
-
-
