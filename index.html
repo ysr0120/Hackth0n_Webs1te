@@ -3,36 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <title>Admin Login</title>
+  <style>
+    /* 全頁背景 */
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+    }
+
+    /* 登入框 */
+    .login-box {
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      width: 320px;
+      text-align: center;
+    }
+
+    /* 標題 */
+    .login-box h2 {
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    /* 輸入欄 */
+    .login-box input[type="text"],
+    .login-box input[type="password"] {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      outline: none;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+
+    .login-box input[type="text"]:focus,
+    .login-box input[type="password"]:focus {
+      border-color: #4facfe;
+    }
+
+    /* 按鈕 */
+    .login-box button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      background: #4facfe;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .login-box button:hover {
+      background: #00f2fe;
+      transform: translateY(-2px);
+    }
+
+    /* 結果提示 */
+    #result {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #d32f2f; /* 錯誤預設紅色 */
+    }
+
+    #result.success {
+      color: #388e3c; /* 成功綠色 */
+    }
+  </style>
 </head>
 <body>
 
-<h2>Admin Login</h2>
-
-<input id="username" type="text" placeholder="username">
-<br><br>
-<input id="password" type="password" placeholder="password">
-<br><br>
-
-<button id="loginBtn">Login</button>
-
-<p id="result">---</p>
+<div class="login-box">
+  <h2>Admin Login</h2>
+  <input id="username" type="text" placeholder="Username">
+  <input id="password" type="password" placeholder="Password">
+  <button id="loginBtn">Login</button>
+  <p id="result">---</p>
+</div>
 
 <script>
-/* ===== Supabase 設定（唯一必要資訊） ===== */
-
 const LOGIN_API =
   "https://ybcdjizonfdhmbxgwdfb.supabase.co/functions/v1/smooth-function";
 
 const SUPABASE_ANON_JWT =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InliY2RqaXpvbmZkaG1ieGd3ZGZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5MjU5MDcsImV4cCI6MjA4NTUwMTkwN30.LwaQ1MivIORu7xc3MEpJWAVP0s1aLdZEv1KuydaaCgk";
 
-/* ===== 登入流程 ===== */
-
 document.getElementById("loginBtn").onclick = async () => {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
+  const result = document.getElementById("result");
 
-  document.getElementById("result").innerText = "登入中…";
+  result.textContent = "登入中...";
+  result.classList.remove("success");
 
   try {
     const res = await fetch(LOGIN_API, {
@@ -42,28 +113,22 @@ document.getElementById("loginBtn").onclick = async () => {
         "Authorization": "Bearer " + SUPABASE_ANON_JWT,
         "apikey": SUPABASE_ANON_JWT
       },
-      body: JSON.stringify({
-        username,
-        password
-      })
+      body: JSON.stringify({ username, password })
     });
 
-    console.log("HTTP status:", res.status);
-
     const text = await res.text();
-    console.log("RAW response:", text);
-
     const data = JSON.parse(text);
 
     if (data.ok === true) {
-      document.getElementById("result").innerText = "登入成功";
+      result.textContent = "登入成功";
+      result.classList.add("success");
+      // window.location.href = "puzzle.html";
     } else {
-      document.getElementById("result").innerText = "登入失敗";
+      result.textContent = "登入失敗";
     }
-
-  } catch (e) {
-    console.error(e);
-    document.getElementById("result").innerText = "前端錯誤，請看 Console";
+  } catch (err) {
+    console.error(err);
+    result.textContent = "前端錯誤，請看 Console";
   }
 };
 </script>
