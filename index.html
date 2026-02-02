@@ -6,47 +6,55 @@
 </head>
 <body>
 
-  <h2>Admin Login</h2>
+<h2>Admin Login</h2>
 
-  <input id="username" type="text" placeholder="username" />
-  <br><br>
-  <input id="password" type="password" placeholder="password" />
-  <br><br>
+<input id="username" type="text" placeholder="username">
+<br><br>
+<input id="password" type="password" placeholder="password">
+<br><br>
 
-  <button id="loginBtn">Login</button>
+<button id="loginBtn">Login</button>
 
-  <p id="result"></p>
+<p id="result">---</p>
 
-  <script>
-    const LOGIN_API =
-      "https://ybcdjizonfdhmbxgwdfb.supabase.co/functions/v1/smooth-function";
+<script>
+const LOGIN_API =
+  "https://ybcdjizonfdhmbxgwdfb.supabase.co/functions/v1/smooth-function";
 
-    document.getElementById("loginBtn").addEventListener("click", async () => {
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
+document.getElementById("loginBtn").onclick = async () => {
+  document.getElementById("result").innerText = "請求中…";
 
-      const res = await fetch(LOGIN_API, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          username,
-          password
-        })
-      });
-
-      const data = await res.json();
-
-      if (data.ok) {
-        document.getElementById("result").innerText = "登入成功";
-        // 下一步可以在這裡導向解謎頁
-        // window.location.href = "puzzle.html";
-      } else {
-        document.getElementById("result").innerText = "登入失敗";
-      }
+  try {
+    const res = await fetch(LOGIN_API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value
+      })
     });
-  </script>
+
+    console.log("HTTP status:", res.status);
+
+    const text = await res.text();
+    console.log("RAW response:", text);
+
+    const data = JSON.parse(text);
+
+    if (data.ok) {
+      document.getElementById("result").innerText = "登入成功";
+    } else {
+      document.getElementById("result").innerText = "登入失敗";
+    }
+
+  } catch (err) {
+    console.error(err);
+    document.getElementById("result").innerText = "JS 錯誤，請看 Console";
+  }
+};
+</script>
 
 </body>
 </html>
