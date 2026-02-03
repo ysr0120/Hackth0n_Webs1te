@@ -89,25 +89,41 @@
       <h2>Admin Login</h2>
       <input id="username" type="text" placeholder="Username">
       <input id="password" type="password" placeholder="Password">
-      <input id="stage_code" type="text" placeholder="Stage Code (ex: login)">
-      <input id="token" type="text" placeholder="Random Token">
+      <input id="stage_code" type="hidden" value="login">
+      <input id="token" type="hidden">
       <button id="loginBtn">Login</button>
       <p id="result">---</p>
     </div>
   </div>
 
   <script>
-    // 新的 Edge Function URL
-    const ISSUE_HASH_API = "https://<your-project-ref>.supabase.co/functions/v1/issue-salted-hash";
+    // 直接寫死 Supabase 設定
+    const SUPABASE_URL = "https://ybcdjizonfdhmbxgwdfb.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InliY2RqaXpvbmZkaG1ieGd3ZGZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5MjU5MDcsImV4cCI6MjA4NTUwMTkwN30.LwaQ1MivIORu7xc3MEpJWAVP0s1aLdZEv1KuydaaCgk";
+    const ISSUE_HASH_API = `${SUPABASE_URL}/functions/v1/Hackthon_Auth`;
+
+    // 產生隨機六位數亂碼
+    function generateToken(length = 6) {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let result = '';
+      for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
+    }
 
     document.getElementById("loginBtn").onclick = async () => {
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value.trim();
-      const stage_code = document.getElementById("stage_code").value.trim();
-      const token = document.getElementById("token").value.trim();
+      const stage_code = document.getElementById("stage_code");
+      const token = document.getElementById("token");
       const result = document.getElementById("result");
 
-      if (!username || !password || !stage_code || !token) {
+      // 設定 stage_code 與 token
+      stage_code.value = "login";
+      token.value = generateToken();
+
+      if (!username || !password) {
         result.style.color = "#ff4d4d";
         result.textContent = "請填入所有欄位";
         return;
@@ -120,9 +136,15 @@
         const res = await fetch(ISSUE_HASH_API, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${SUPABASE_ANON_KEY}` 
           },
-          body: JSON.stringify({ username, password, stage_code, token })
+          body: JSON.stringify({
+            username,
+            password,
+            stage_code: stage_code.value,
+            token: token.value
+          })
         });
 
         const data = await res.json();
