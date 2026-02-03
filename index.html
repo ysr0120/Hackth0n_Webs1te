@@ -14,38 +14,31 @@
       overflow: hidden;
     }
 
-    /* 將背景容器改為 Flex 容器 */
     .bg-test {
       width: 100vw;
       height: 100vh;
       background-image: url(https://cybernudi.github.io/Hackth0n_Webs1te/Label.png);
       background-repeat: no-repeat;
       background-position: center;
-      background-size: contain;
-      
-      /* 關鍵：讓內部的 login-box 居中 */
+      background-size: cover;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
     .login-box {
-      /* 設定半透明與毛玻璃，讓它跟背景融合 */
-      background: rgba(255, 255, 255, 0.15); 
+      background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(10px); 
       -webkit-backdrop-filter: blur(10px);
-      
       padding: 40px;
       border-radius: 20px;
       border: 1px solid rgba(255, 255, 255, 0.2);
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-      
       width: 320px;
       text-align: center;
       box-sizing: border-box;
     }
 
-    /* 為了讓在深色背景/圖片上更清楚，調整文字顏色 */
     .login-box h2 {
       margin-bottom: 30px;
       color: #fff;
@@ -96,43 +89,57 @@
       <h2>Admin Login</h2>
       <input id="username" type="text" placeholder="Username">
       <input id="password" type="password" placeholder="Password">
+      <input id="stage_code" type="text" placeholder="Stage Code (ex: login)">
+      <input id="token" type="text" placeholder="Random Token">
       <button id="loginBtn">Login</button>
       <p id="result">---</p>
     </div>
   </div>
 
   <script>
-    const LOGIN_API = "https://ybcdjizonfdhmbxgwdfb.supabase.co/functions/v1/smooth-function";
-    const SUPABASE_ANON_JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InliY2RqaXpvbmZkaG1ieGd3ZGZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5MjU5MDcsImV4cCI6MjA4NTUwMTkwN30.LwaQ1MivIORu7xc3MEpJWAVP0s1aLdZEv1KuydaaCgk";
+    // 新的 Edge Function URL
+    const ISSUE_HASH_API = "https://<your-project-ref>.supabase.co/functions/v1/issue-salted-hash";
 
     document.getElementById("loginBtn").onclick = async () => {
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const stage_code = document.getElementById("stage_code").value.trim();
+      const token = document.getElementById("token").value.trim();
       const result = document.getElementById("result");
 
-      result.textContent = "Checking...";
+      if (!username || !password || !stage_code || !token) {
+        result.style.color = "#ff4d4d";
+        result.textContent = "請填入所有欄位";
+        return;
+      }
+
+      result.style.color = "#ffff00";
+      result.textContent = "Processing...";
 
       try {
-        const res = await fetch(LOGIN_API, {
+        const res = await fetch(ISSUE_HASH_API, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + SUPABASE_ANON_JWT,
-            "apikey": SUPABASE_ANON_JWT
+            "Content-Type": "application/json"
           },
-          body: JSON.stringify({ username, password })
+          body: JSON.stringify({ username, password, stage_code, token })
         });
 
         const data = await res.json();
 
         if (data.ok === true) {
           result.style.color = "#00ff00";
-          result.textContent = "Login Success";
+          result.textContent = `Success! Hash: ${data.hash}`;
+          // 下一步可以把 hash 存 localStorage 或帶到下一頁
+          // localStorage.setItem("AUTH_HASH", data.hash);
+          // window.location.href = "puzzle.html";
         } else {
           result.style.color = "#ff4d4d";
-          result.textContent = "Login Failed";
+          result.textContent = "Login Failed: " + (data.error || "");
         }
       } catch (err) {
+        console.error(err);
+        result.style.color = "#ff4d4d";
         result.textContent = "Connection Error";
       }
     };
