@@ -81,7 +81,6 @@
     const AUTH_API = `${SUPABASE_URL}/functions/v1/AuthWebsite`;
     const ANSWER_API = `${SUPABASE_URL}/functions/v1/CheckAnswer`;
     const PUZZLE_CODE = 1; // 此頁 puzzle_code
-
     const result = document.getElementById("result");
     const pathError = document.getElementById("pathError");
 
@@ -90,12 +89,11 @@
       const params = new URLSearchParams(window.location.search);
       return {
         username: params.get("username") || "",
-        token: params.get("token") || "",
-        hash: params.get("hash") || ""
+        token: params.get("token") || ""
       };
     }
 
-    let { username, token, hash } = getUrlParams();
+    let { username, token} = getUrlParams();
 
     // ===== 授權函式 =====
     async function authorizePage() {
@@ -104,7 +102,7 @@
         const res = await fetch(AUTH_API, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, hash })
+          body: JSON.stringify({ username,token,PUZZLE_CODE })
         });
         const data = await res.json();
         return data.ok === true;
