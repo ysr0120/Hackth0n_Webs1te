@@ -118,6 +118,15 @@
         return false;
       }
     }
+	// 產生六位英數 token
+    function generateToken(length = 6) {
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let t = "";
+      for (let i = 0; i < length; i++) {
+        t += chars[Math.floor(Math.random() * chars.length)];
+      }
+      return t;
+    }
     // ===== 初始化頁面 =====
     (async () => {
       const ok = await authorizePage();
@@ -143,15 +152,19 @@
 
         result.style.color = "#ffff00";
         result.textContent = "Checking...";
-
+		
         try {
+		  const nexttoken = generateToken();
           const res = await fetch(ANSWER_API, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+			  "Content-Type": "application/json",
+			  "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+			},
             body: JSON.stringify({
               username,
               answer,
-              token,
+              token: nexttoken,
               puzzle_code: PUZZLE_CODE
             })
           });
