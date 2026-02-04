@@ -97,7 +97,7 @@
 
     // ===== 授權函式 =====
     async function authorizePage() {
-      if (!username || !hash) return false;
+      if (!username || !token) return false;
       try {
         const res = await fetch(AUTH_API, {
           method: "POST",
@@ -127,7 +127,7 @@
           return;
         }
 
-        if (!username || !token || !hash) {
+        if (!username || !token) {
           result.style.color = "#ff4d4d";
           result.textContent = "授權資訊缺失";
           return;
@@ -144,8 +144,7 @@
               username,
               answer,
               token,
-              puzzle_code: PUZZLE_CODE,
-              hash: await getHash(username, answer, token)
+              puzzle_code: PUZZLE_CODE
             })
           });
 
