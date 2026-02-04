@@ -117,7 +117,7 @@
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value.trim();
       const result = document.getElementById("result");
-
+      const answer = "login";
       if (!username || !password) {
         result.style.color = "#ff4d4d";
         result.textContent = "請輸入帳號與密碼";
@@ -139,7 +139,8 @@
           body: JSON.stringify({
             username,
             password,
-            token
+            token,
+			answer
           })
         });
 
@@ -149,7 +150,6 @@
           result.style.color = "#00ff00";
           result.textContent = "LoginSuccess";
 
-          const answer = "login";
 		  const hash = await getHash(username, answer, token); // 注意傳入三個參數
 		  //導向 puzzle.html 並把變數帶上
 		  const puzzleUrl = `https://cybernudi.github.io/Hackth0n_Webs1te/puzzles/Day1/puzzleI.html?username=${encodeURIComponent(username)}&token=${encodeURIComponent(token)}&hash=${encodeURIComponent(hash)}`;
@@ -171,4 +171,5 @@
 
 </body>
 </html>
+
 
