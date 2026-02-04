@@ -1,0 +1,104 @@
+﻿:root {
+  --bg-1: #0b0f1a;
+  --bg-2: #101a2c;
+  --glow: #2fb7ff;
+  --accent: #ffb347;
+  --ink: #eaf2ff;
+  --muted: #9fb0cc;
+  --danger: #ff6b6b;
+  --success: #21d07a;
+  --card: rgba(14, 23, 42, 0.78);
+  --stroke: rgba(255, 255, 255, 0.08);
+  --shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  color: var(--ink);
+  font-family: "Plus Jakarta Sans", "Poppins", "Noto Sans TC", sans-serif;
+  background:
+    radial-gradient(800px 400px at 20% 10%, rgba(47, 183, 255, 0.18), transparent 60%),
+    radial-gradient(700px 420px at 80% 80%, rgba(255, 179, 71, 0.14), transparent 60%),
+    linear-gradient(135deg, var(--bg-1), var(--bg-2));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  text-align: center;
+  background: var(--card);
+  padding: 42px 36px;
+  border-radius: 20px;
+  border: 1px solid var(--stroke);
+  box-shadow: var(--shadow);
+  max-width: 420px;
+  width: 92%;
+  backdrop-filter: blur(14px);
+}
+
+h2 {
+  margin: 0 0 16px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+a#downloadBtn {
+  text-decoration: none;
+}
+
+input {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 12px 0 6px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  outline: none;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus {
+  border-color: rgba(47, 183, 255, 0.6);
+  box-shadow: 0 0 0 3px rgba(47, 183, 255, 0.15);
+}
+
+button {
+  padding: 12px 20px;
+  margin-top: 12px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--glow), #3de6c4);
+  color: #06202a;
+  box-shadow: 0 10px 22px rgba(47, 183, 255, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 26px rgba(47, 183, 255, 0.3);
+}
+
+#result, #pathError {
+  margin-top: 14px;
+  font-weight: 600;
+}
+
+#pathError {
+  color: var(--danger);
+  font-size: 14px;
+}
+@keyframes floatIn {
+    0% { opacity: 0; transform: translateY(16px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .container {
+    animation: floatIn 0.8s ease-out both;
+  }
