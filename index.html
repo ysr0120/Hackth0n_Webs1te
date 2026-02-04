@@ -152,7 +152,7 @@
           const answer = "login";
 		  const hash = await getHash(username, answer, token); // 注意傳入三個參數
 		  //導向 puzzle.html 並把變數帶上
-		  const puzzleUrl = `file:///C:/Users/awaun/Desktop/puzzles/Day1/puzzletest.html?username=${encodeURIComponent(username)}&token=${encodeURIComponent(token)}&hash=${encodeURIComponent(hash)}`;
+		  const puzzleUrl = `https://cybernudi.github.io/Hackth0n_Webs1te/puzzles/Day1/puzzleI.html?username=${encodeURIComponent(username)}&token=${encodeURIComponent(token)}&hash=${encodeURIComponent(hash)}`;
 		  window.location.href = puzzleUrl;
 
         } else {
@@ -171,3 +171,4 @@
 
 </body>
 </html>
+
