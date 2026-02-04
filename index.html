@@ -85,7 +85,24 @@
     const SUPABASE_URL = "https://ybcdjizonfdhmbxgwdfb.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InliY2RqaXpvbmZkaG1ieGd3ZGZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5MjU5MDcsImV4cCI6MjA4NTUwMTkwN30.LwaQ1MivIORu7xc3MEpJWAVP0s1aLdZEv1KuydaaCgk";
     const LOGIN_API = `${SUPABASE_URL}/functions/v1/Hackthon_Auth`;
+	async function getHash(username, answer, token) {
+		const encoder = new TextEncoder();
 
+		// 將三個值固定順序串接，避免碰撞
+		const raw = `${username}|${answer}|${token}`;
+
+		// 使用 Web Crypto API 產生 SHA-256
+		const data = encoder.encode(raw);
+		const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+
+		// 轉成 hex string
+		const hashArray = Array.from(new Uint8Array(hashBuffer));
+		const hashHex = hashArray
+		  .map(b => b.toString(16).padStart(2, "0"))
+		  .join("");
+
+		return hashHex;
+	  }
     // 產生六位英數 token
     function generateToken(length = 6) {
       const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -132,17 +149,20 @@
           result.style.color = "#00ff00";
           result.textContent = "LoginSuccess";
 
-          // 下一步行為（保留註解）
-          // 可以把 token 或 hash 存 localStorage
-          // localStorage.setItem("AUTH_TOKEN", token);
-          // window.location.href = "puzzle.html";
+          const answer = "login";
+		  const hash = await getHash(username, answer, token); // 注意傳入三個參數
+		  //導向 puzzle.html 並把變數帶上
+		  const puzzleUrl = `file:///C:/Users/awaun/Desktop/puzzles/Day1/puzzletest.html?username=${encodeURIComponent(username)}&token=${encodeURIComponent(token)}&hash=${encodeURIComponent(hash)}`;
+		  window.location.href = puzzleUrl;
 
         } else {
+
           result.style.color = "#ff4d4d";
           result.textContent = data.error || "Login Failed";
         }
 
       } catch (err) {
+	  		  console.error(err);
         result.style.color = "#ff4d4d";
         result.textContent = "Connection Error";
       }
