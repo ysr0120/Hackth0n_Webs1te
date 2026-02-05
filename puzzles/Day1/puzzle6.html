@@ -83,7 +83,7 @@
           const data = await res.json();
           if (data.ok) {
             result.style.color = "#00ff00";
-            result.textContent = data.isCorrect ? `Correct!` : "Incorrect!";
+            result.textContent = data.isCorrect ? `Day1 puzzle completed!` : "Incorrect!";
           } else {
             result.style.color = "#ff4d4d";
             result.textContent = data.error || "Error submitting answer";
@@ -96,4 +96,5 @@
     })();
   </script>
 </body>
+
 </html>
