@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Puzzle Page</title>
+   <link rel="stylesheet" href="../assets/css/puzzle-common.css">
+</head>
+<body>
+
+  <div class="container" id="main-container">
+    <h2>Puzzle Download</h2>
+    <a id="downloadBtn" href="puzzle_file.txt" download>
+      <button>Download Puzzle</button>
+    </a>
+
+    <div style="margin-top:20px;">
+      <input id="answerInput" type="text" placeholder="Enter your answer">
+      <button id="submitAnswer">Submit Answer</button>
+    </div>
+    
+    <p id="result">---</p>
+    <p id="pathError"></p>
+  </div>
+
+  <script src="../assets/js/puzzle-common.js"></script>
+  <script>
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InliY2RqaXpvbmZkaG1ieGd3ZGZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5MjU5MDcsImV4cCI6MjA4NTUwMTkwN30.LwaQ1MivIORu7xc3MEpJWAVP0s1aLdZEv1KuydaaCgk";
+    const SUPABASE_URL = "https://ybcdjizonfdhmbxgwdfb.supabase.co";
+    const AUTH_API = `${SUPABASE_URL}/functions/v1/AuthWebsite`;
+    const ANSWER_API = `${SUPABASE_URL}/functions/v1/CheckAnswer`;
+    const PUZZLE_CODE = 6;
+    const result = document.getElementById("result");
+    const pathError = document.getElementById("pathError");
+    let { username, token} = getUrlParams();
+    (async () => {
+      const ok = await authorizePage({
+        username,
+        token,
+        authApi: AUTH_API,
+        supabaseKey: SUPABASE_ANON_KEY,
+        puzzleCode: PUZZLE_CODE
+      });
+      if (!ok) {
+        pathError.textContent = "Incorrect Path";
+      } else {
+        pathError.textContent = "授權成功";
+      }
+
+      document.getElementById("submitAnswer").onclick = async () => {
+        const answer = document.getElementById("answerInput").value.trim();
+        if (!answer) {
+          result.style.color = "#ff4d4d";
+          result.textContent = "請輸入答案";
+          return;
+        }
+
+        if (!username || !token) {
+          result.style.color = "#ff4d4d";
+          result.textContent = "缺少認證參數";
+          return;
+        }
+
+        result.style.color = "#ffff00";
+        result.textContent = "Checking...";
+		
+        try {
+		  const nexttoken = generateToken();
+          const res = await fetch(ANSWER_API, {
+            method: "POST",
+            headers: {
+			  "Content-Type": "application/json",
+			  "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+			},
+            body: JSON.stringify({
+              username,
+              answer,
+              token: nexttoken,
+              puzzle_code: PUZZLE_CODE
+            })
+          });
+
+          const data = await res.json();
+          if (data.ok) {
+            result.style.color = "#00ff00";
+            result.textContent = data.isCorrect ? `Correct!` : "Incorrect!";
+          } else {
+            result.style.color = "#ff4d4d";
+            result.textContent = data.error || "Error submitting answer";
+          }
+        } catch (err) {
+          result.style.color = "#ff4d4d";
+          result.textContent = "Connection Error";
+        }
+      };
+    })();
+  </script>
+</body>
+</html>
