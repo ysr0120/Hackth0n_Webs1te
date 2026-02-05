@@ -82,8 +82,15 @@
 
           const data = await res.json();
           if (data.ok) {
-            result.style.color = "#00ff00";
-            result.textContent = data.isCorrect ? `Correct!` : "Incorrect!";
+            if (data.isCorrect) {
+              result.style.color = "#00ff00";
+              result.textContent = "Correct!";
+              const nextUrl = `./puzzle6.html?username=${encodeURIComponent(username)}&token=${encodeURIComponent(nexttoken)}`;
+              window.location.href = nextUrl;
+            } else {
+              result.style.color = "#ff4d4d";
+              result.textContent = "Incorrect!";
+            }
           } else {
             result.style.color = "#ff4d4d";
             result.textContent = data.error || "Error submitting answer";
@@ -96,4 +103,5 @@
     })();
   </script>
 </body>
+
 </html>
