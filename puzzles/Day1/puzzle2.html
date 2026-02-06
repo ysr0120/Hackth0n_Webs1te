@@ -5,24 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Puzzle Page</title>
    <link rel="stylesheet" href="../assets/css/puzzle-common.css">
+	<style>
+  	html, body {
+    margin: 0;
+   	padding: 0;
+	width: 100%;
+ 	height: 100%;
+	}
+
+	.bg {
+  	width: 100vw;
+  	height: 100vh;
+
+  	background-image:
+    linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+    url(https://cybernudi.github.io/Hackth0n_Webs1te/Label.png); 
+
+ 	background-size: contain;
+    background-position: center;
+  	background-repeat: no-repeat;
+
+  	display: flex;
+  	justify-content: center;
+  	align-items: center;
+	}
+  </style>
 </head>
 <body>
+	<div class="bg">	
+  	<div class="container" id="main-container">
+    	<h2>Puzzle Download</h2>
+    	<a id="downloadBtn" href="puzzle_file.txt" download>
+      	<button>Download Puzzle</button>
+   	 </a>
 
-  <div class="container" id="main-container">
-    <h2>Puzzle Download</h2>
-    <a id="downloadBtn" href="puzzle_file.txt" download>
-      <button>Download Puzzle</button>
-    </a>
-
-    <div style="margin-top:20px;">
-      <input id="answerInput" type="text" placeholder="Enter your answer">
-      <button id="submitAnswer">Submit Answer</button>
-    </div>
+   	 <div style="margin-top:20px;">
+  	    <input id="answerInput" type="text" placeholder="Enter your answer">
+ 	     <button id="submitAnswer">Submit Answer</button>
+	    </div>
     
-    <p id="result">---</p>
-    <p id="pathError"></p>
-  </div>
-
+	    <p id="result">---</p>
+    	<p id="pathError"></p>
+	  </div>
+	</div>
   <script src="../assets/js/puzzle-common.js"></script>
   <script>
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InliY2RqaXpvbmZkaG1ieGd3ZGZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5MjU5MDcsImV4cCI6MjA4NTUwMTkwN30.LwaQ1MivIORu7xc3MEpJWAVP0s1aLdZEv1KuydaaCgk";
