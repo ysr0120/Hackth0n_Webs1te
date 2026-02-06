@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (data.ok === true) {
         const hash = await getHash(username, "login", loginToken);
-        const url = `puzzletest.html?username=${encodeURIComponent(username)}&token=${encodeURIComponent(loginToken)}&hash=${encodeURIComponent(hash)}`;
+        const url = `./puzzle7.html?username=${encodeURIComponent(username)}&token=${encodeURIComponent(nexttoken)}`;
         window.location.href = url;
       } else {
         result.style.color = "#ff4d4d";
@@ -191,3 +191,4 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 </body>
 </html>
+
