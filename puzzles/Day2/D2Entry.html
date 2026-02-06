@@ -126,8 +126,12 @@ async function getHash(username, answer, token) {
 
 // ===== token 產生 =====
 function generateToken(length = 6) {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let t = "";
+    for (let i = 0; i < length; i++) {
+    	t += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return t;
 }
 
 // ===== 主流程 =====
@@ -172,10 +176,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
 
       const data = await res.json();
-
       if (data.ok === true) {
         const hash = await getHash(username, "login", loginToken);
-        const url = `./puzzle8.html?username=${encodeURIComponent(username)}&token=${encodeURIComponent(nexttoken)}`;
+        const url = `./puzzle8.html?username=${encodeURIComponent(username)}&token=${encodeURIComponent(loginToken)}`;
         window.location.href = url;
       } else {
         result.style.color = "#ff4d4d";
@@ -191,5 +194,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 </body>
 </html>
+
 
 
